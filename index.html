@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>THE EXTREMELY IMPORTANT BUTTON™ — Extremely Important Technologies</title>
+<meta name="description" content="The single most important button ever engineered. Press it. Nothing will be explained." />
+<meta name="theme-color" content="#0b0d17" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%236c5ce7'/%3E%3Ccircle cx='50' cy='50' r='28' fill='%23ff5c8a'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-theme="dark">
+
+<div id="processing-overlay" class="overlay overlay--processing" aria-hidden="true" role="status">
+  <div class="processing-card glass">
+    <div class="spinner" id="processing-spinner" aria-hidden="true"></div>
+    <p class="processing-title" id="processing-title">Contacting Department of Button Affairs…</p>
+    <div class="progress-bar-track" id="progress-bar-track" hidden>
+      <div class="progress-bar-fill" id="progress-bar-fill"></div>
+    </div>
+    <ul class="processing-log" id="processing-log"></ul>
+  </div>
+</div>
+
+<div id="breakthrough-overlay" class="overlay overlay--breakthrough" aria-hidden="true" role="status">
+  <div class="breakthrough-burst" aria-hidden="true"></div>
+  <div class="breakthrough-card">
+    <p class="breakthrough-eyebrow">Unprecedented Organizational Event</p>
+    <h2 class="breakthrough-title">SYSTEM BREAKTHROUGH</h2>
+    <p class="breakthrough-body" id="breakthrough-body">Every metric the company tracks has simultaneously improved for no discernible reason.</p>
+    <button class="btn btn--primary" id="breakthrough-dismiss">Acknowledge Greatness</button>
+  </div>
+</div>
+
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+<div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="false"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark" id="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="26" height="26"><circle cx="16" cy="16" r="15" fill="url(#g1)"/><defs><linearGradient id="g1" x1="0" y1="0" x2="32" y2="32"><stop offset="0" stop-color="#8b7bff"/><stop offset="1" stop-color="#ff5c8a"/></linearGradient></defs></svg>
+      </span>
+      <span class="brand-text">
+        <span class="brand-name">Extremely Important Technologies</span>
+        <span class="brand-tag">Makers of THE BUTTON™</span>
+      </span>
+    </div>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="#dashboard">Dashboard</a>
+      <a href="#activity">Activity Log</a>
+      <a href="#achievements">Achievements</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="sound-toggle" type="button" aria-pressed="true" aria-label="Toggle sound">
+        <svg class="icon icon-sound-on" viewBox="0 0 24 24"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M19 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+        <svg class="icon icon-sound-off" viewBox="0 0 24 24" hidden><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle light and dark mode">
+        <svg class="icon icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 2.5v2.4M12 19.1v2.4M21.5 12h-2.4M4.9 12H2.5M18.4 5.6l-1.7 1.7M7.3 16.7l-1.7 1.7M18.4 18.4l-1.7-1.7M7.3 7.3 5.6 5.6"/></g></svg>
+        <svg class="icon icon-moon" viewBox="0 0 24 24" hidden><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z" fill="currentColor"/></svg>
+      </button>
+      <button class="icon-btn" id="settings-open" type="button" aria-label="Open settings" aria-haspopup="dialog">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M19.4 13a7.4 7.4 0 0 0 .06-1l1.86-1.45a.6.6 0 0 0 .14-.77l-1.76-3.05a.6.6 0 0 0-.73-.26l-2.2.88a7.6 7.6 0 0 0-1.73-1l-.33-2.34a.6.6 0 0 0-.6-.51h-3.52a.6.6 0 0 0-.6.51l-.33 2.34a7.6 7.6 0 0 0-1.73 1l-2.2-.88a.6.6 0 0 0-.73.26L2.54 9.78a.6.6 0 0 0 .14.77L4.54 12a7.4 7.4 0 0 0 0 2l-1.86 1.45a.6.6 0 0 0-.14.77l1.76 3.05a.6.6 0 0 0 .73.26l2.2-.88a7.6 7.6 0 0 0 1.73 1l.33 2.34a.6.6 0 0 0 .6.51h3.52a.6.6 0 0 0 .6-.51l.33-2.34a7.6 7.6 0 0 0 1.73-1l2.2.88a.6.6 0 0 0 .73-.26l1.76-3.05a.6.6 0 0 0-.14-.77z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="home">
+    <p class="eyebrow">Board-Approved · Fully Compliant · Purpose Unclear</p>
+    <h1 class="hero-title">THE EXTREMELY IMPORTANT BUTTON<span class="tm">™</span></h1>
+    <p class="hero-subtitle">Its function is classified. Its importance is not in question. Press with confidence.</p>
+
+    <div class="button-stage">
+      <div class="button-glow" aria-hidden="true"></div>
+      <button id="the-button" class="the-button" type="button" aria-describedby="button-status">
+        <span class="the-button-inner">
+          <span class="the-button-label">PRESS</span>
+          <span class="the-button-sub">Authorized Personnel Encouraged</span>
+        </span>
+        <span class="ripple-layer" aria-hidden="true"></span>
+      </button>
+      <p id="button-status" class="button-status" role="status" aria-live="polite">Awaiting your extremely important decision.</p>
+    </div>
+
+    <div class="counter-row">
+      <div class="counter-chip">
+        <span class="counter-value" id="session-clicks">0</span>
+        <span class="counter-label">Presses This Session</span>
+      </div>
+      <div class="counter-chip counter-chip--accent">
+        <span class="counter-value" id="lifetime-clicks">0</span>
+        <span class="counter-label">Lifetime Presses</span>
+      </div>
+      <div class="counter-chip">
+        <span class="counter-value" id="cpm-value">0</span>
+        <span class="counter-label">Presses / Minute</span>
+      </div>
+    </div>
+
+    <div class="hero-cta-row">
+      <button class="btn btn--ghost" id="share-open" type="button">Share Your Performance</button>
+    </div>
+  </section>
+
+  <section class="stats-section">
+    <div class="section-inner">
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card glass">
+          <span class="stat-label">Session Duration</span>
+          <span class="stat-value" id="stat-session-duration">0:00</span>
+        </div>
+        <div class="stat-card glass">
+          <span class="stat-label">Achievements Unlocked</span>
+          <span class="stat-value" id="stat-achievements">0 / <span id="stat-achievements-total">0</span></span>
+        </div>
+        <div class="stat-card glass">
+          <span class="stat-label">System Breakthroughs</span>
+          <span class="stat-value" id="stat-breakthroughs">0</span>
+        </div>
+        <div class="stat-card glass">
+          <span class="stat-label">Member Since</span>
+          <span class="stat-value" id="stat-member-since">Today</span>
+        </div>
+        <div class="stat-card glass">
+          <span class="stat-label">Days Visited</span>
+          <span class="stat-value" id="stat-days-visited">1</span>
+        </div>
+        <div class="stat-card glass">
+          <span class="stat-label">Longest Session</span>
+          <span class="stat-value" id="stat-longest-session">0</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="dashboard-section" id="dashboard">
+    <div class="section-inner">
+      <div class="section-heading">
+        <h2>Executive Performance Dashboard</h2>
+        <p>Live figures, reviewed by nobody, trusted by all.</p>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card glass">
+          <div class="kpi-top">
+            <span class="kpi-label">Global Synergy Index</span>
+            <span class="kpi-trend kpi-trend--up" id="kpi-synergy-trend">▲ 0.0%</span>
+          </div>
+          <span class="kpi-value" id="kpi-synergy">0.00</span>
+          <canvas class="kpi-spark" id="spark-synergy" height="36"></canvas>
+        </div>
+        <div class="kpi-card glass">
+          <div class="kpi-top">
+            <span class="kpi-label">Stakeholder Happiness</span>
+            <span class="kpi-trend kpi-trend--up" id="kpi-happiness-trend">▲ 0.0%</span>
+          </div>
+          <span class="kpi-value" id="kpi-happiness">0<span class="kpi-unit">%</span></span>
+          <canvas class="kpi-spark" id="spark-happiness" height="36"></canvas>
+        </div>
+        <div class="kpi-card glass">
+          <div class="kpi-top">
+            <span class="kpi-label">Quarterly Momentum</span>
+            <span class="kpi-trend kpi-trend--up" id="kpi-momentum-trend">▲ 0.0%</span>
+          </div>
+          <span class="kpi-value" id="kpi-momentum">0</span>
+          <canvas class="kpi-spark" id="spark-momentum" height="36"></canvas>
+        </div>
+        <div class="kpi-card glass">
+          <div class="kpi-top">
+            <span class="kpi-label">Efficiency Rating</span>
+            <span class="kpi-trend" id="kpi-efficiency-trend">— 0.0%</span>
+          </div>
+          <span class="kpi-value" id="kpi-efficiency">A+</span>
+          <canvas class="kpi-spark" id="spark-efficiency" height="36"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-grid">
+        <div class="chart-card glass">
+          <div class="chart-card-head">
+            <h3>Press Velocity</h3>
+            <span class="chart-sub">Last 20 presses</span>
+          </div>
+          <canvas id="chart-velocity" height="180"></canvas>
+        </div>
+        <div class="chart-card glass">
+          <div class="chart-card-head">
+            <h3>Departmental Routing</h3>
+            <span class="chart-sub">Where your presses are escalated</span>
+          </div>
+          <canvas id="chart-departments" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="activity-section" id="activity">
+    <div class="section-inner">
+      <div class="section-heading section-heading--row">
+        <div>
+          <h2>Activity Log</h2>
+          <p>An auditable record of extremely important events.</p>
+        </div>
+        <button class="btn btn--ghost btn--small" id="clear-log">Clear Log</button>
+      </div>
+      <div class="activity-log-card glass">
+        <ul id="activity-log" class="activity-log"></ul>
+        <p class="activity-empty" id="activity-empty">No activity yet. Press the button to generate history.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="achievements-section" id="achievements">
+    <div class="section-inner">
+      <div class="section-heading">
+        <h2>Achievements</h2>
+        <p>Meaningless recognition for meaningless milestones.</p>
+      </div>
+      <div class="achievements-grid" id="achievements-grid"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="section-inner footer-inner">
+    <p>© 2026 Extremely Important Technologies. All decisions are final.</p>
+    <p class="footer-sub">THE EXTREMELY IMPORTANT BUTTON™ is a registered pursuit of Extremely Important Technologies. No purchase necessary. Importance not guaranteed.</p>
+  </div>
+</footer>
+
+<div class="modal-backdrop" id="settings-backdrop" hidden>
+  <div class="modal glass" id="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <div class="modal-head">
+      <h2 id="settings-title">Settings</h2>
+      <button class="icon-btn" id="settings-close" type="button" aria-label="Close settings">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <p class="modal-lede">Entirely unnecessary, exactly as intended.</p>
+
+    <div class="setting-row">
+      <div>
+        <span class="setting-title">Appearance</span>
+        <span class="setting-desc">Choose how importance is displayed</span>
+      </div>
+      <div class="segmented" id="theme-segmented" role="radiogroup" aria-label="Theme">
+        <button type="button" data-theme-choice="light" role="radio">Light</button>
+        <button type="button" data-theme-choice="dark" role="radio">Dark</button>
+        <button type="button" data-theme-choice="system" role="radio">System</button>
+      </div>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <span class="setting-title">Sound Effects</span>
+        <span class="setting-desc">Auditory confirmation of importance</span>
+      </div>
+      <button class="switch" id="setting-sound" role="switch" aria-checked="true" type="button"><span class="switch-knob"></span></button>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <span class="setting-title">Haptic Feedback</span>
+        <span class="setting-desc">Physical confirmation, where supported</span>
+      </div>
+      <button class="switch" id="setting-haptics" role="switch" aria-checked="true" type="button"><span class="switch-knob"></span></button>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <span class="setting-title">Reduce Motion</span>
+        <span class="setting-desc">Fewer animations, same importance</span>
+      </div>
+      <button class="switch" id="setting-motion" role="switch" aria-checked="false" type="button"><span class="switch-knob"></span></button>
+    </div>
+
+    <div class="setting-row setting-row--column">
+      <div>
+        <span class="setting-title">Corporate Jargon Intensity</span>
+        <span class="setting-desc">How much synergy you can tolerate</span>
+      </div>
+      <input type="range" id="setting-jargon" min="1" max="3" step="1" value="2" class="slider" aria-label="Corporate jargon intensity" />
+      <div class="slider-labels"><span>Mild</span><span>Standard</span><span>Unbearable</span></div>
+    </div>
+
+    <div class="modal-divider"></div>
+
+    <div class="setting-row">
+      <div>
+        <span class="setting-title">Export Your Data</span>
+        <span class="setting-desc">Download a full record of your importance</span>
+      </div>
+      <button class="btn btn--ghost btn--small" id="export-data">Export JSON</button>
+    </div>
+
+    <div class="setting-row setting-row--danger">
+      <div>
+        <span class="setting-title">Reset All Statistics</span>
+        <span class="setting-desc">Erase your legacy. Cannot be undone.</span>
+      </div>
+      <button class="btn btn--danger btn--small" id="reset-data">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="share-backdrop" hidden>
+  <div class="modal modal--share glass" id="share-modal" role="dialog" aria-modal="true" aria-labelledby="share-title">
+    <div class="modal-head">
+      <h2 id="share-title">Share Your Performance</h2>
+      <button class="icon-btn" id="share-close" type="button" aria-label="Close share dialog">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <p class="modal-lede">A professionally formatted summary of your contributions.</p>
+    <div class="share-card-wrap">
+      <canvas id="share-canvas" width="600" height="360"></canvas>
+    </div>
+    <div class="share-actions">
+      <button class="btn btn--primary" id="share-download">Download Card</button>
+      <button class="btn btn--ghost" id="share-copy">Copy Summary</button>
+      <button class="btn btn--ghost" id="share-native" hidden>Share…</button>
+    </div>
+  </div>
+</div>
+
+<div class="achievement-toast" id="achievement-toast" hidden>
+  <div class="achievement-toast-icon" id="achievement-toast-icon">🏆</div>
+  <div>
+    <p class="achievement-toast-eyebrow">Achievement Unlocked</p>
+    <p class="achievement-toast-title" id="achievement-toast-title">—</p>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
