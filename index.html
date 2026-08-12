@@ -11,6 +11,24 @@
 </head>
 <body data-theme="dark">
 
+<div id="grain-overlay" aria-hidden="true"></div>
+
+<div id="boot-overlay" class="boot-overlay" role="status" aria-label="Loading">
+  <div class="boot-inner">
+    <div class="boot-mark">
+      <svg viewBox="0 0 32 32" width="44" height="44"><circle cx="16" cy="16" r="15" fill="url(#gboot)"/><defs><linearGradient id="gboot" x1="0" y1="0" x2="32" y2="32"><stop offset="0" stop-color="#8b7bff"/><stop offset="1" stop-color="#ff5c8a"/></linearGradient></defs></svg>
+    </div>
+    <p class="boot-eyebrow">Extremely Important Technologies</p>
+    <p class="boot-title">Initializing Systems Of Great Importance</p>
+    <div class="boot-progress-track">
+      <div class="boot-progress-fill" id="boot-progress-fill"></div>
+    </div>
+    <ul class="boot-log" id="boot-log"></ul>
+    <button class="btn btn--primary boot-enter" id="boot-enter" hidden>Enter <span aria-hidden="true">→</span></button>
+    <button class="boot-skip" id="boot-skip" type="button">Skip Importance</button>
+  </div>
+</div>
+
 <div id="processing-overlay" class="overlay overlay--processing" aria-hidden="true" role="status">
   <div class="processing-card glass">
     <div class="spinner" id="processing-spinner" aria-hidden="true"></div>
@@ -18,12 +36,19 @@
     <div class="progress-bar-track" id="progress-bar-track" hidden>
       <div class="progress-bar-fill" id="progress-bar-fill"></div>
     </div>
+    <ol class="approval-chain" id="approval-chain">
+      <li data-step="0"><span class="approval-dot"></span>Submitted</li>
+      <li data-step="1"><span class="approval-dot"></span>Reviewing</li>
+      <li data-step="2"><span class="approval-dot"></span>Escalating</li>
+      <li data-step="3"><span class="approval-dot"></span>Resolved</li>
+    </ol>
     <ul class="processing-log" id="processing-log"></ul>
   </div>
 </div>
 
 <div id="breakthrough-overlay" class="overlay overlay--breakthrough" aria-hidden="true" role="status">
   <div class="breakthrough-burst" aria-hidden="true"></div>
+  <div class="breakthrough-rays" aria-hidden="true"></div>
   <div class="breakthrough-card">
     <p class="breakthrough-eyebrow">Unprecedented Organizational Event</p>
     <h2 class="breakthrough-title">SYSTEM BREAKTHROUGH</h2>
@@ -35,6 +60,22 @@
 <canvas id="confetti-canvas" aria-hidden="true"></canvas>
 
 <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="false"></div>
+
+<div class="palette-backdrop" id="palette-backdrop" hidden>
+  <div class="palette glass" id="command-palette" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="palette-input-row">
+      <svg class="icon" viewBox="0 0 24 24" width="18" height="18"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M20 20l-4.3-4.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <input type="text" id="palette-input" class="palette-input" placeholder="Type a command of great importance…" autocomplete="off" spellcheck="false" aria-label="Command" />
+      <kbd class="palette-esc">Esc</kbd>
+    </div>
+    <ul class="palette-list" id="palette-list" role="listbox"></ul>
+    <div class="palette-footer">
+      <span><kbd>↑</kbd><kbd>↓</kbd> Navigate</span>
+      <span><kbd>Enter</kbd> Execute</span>
+      <span><kbd>⌘K</kbd> Toggle</span>
+    </div>
+  </div>
+</div>
 
 <header class="site-header">
   <div class="header-inner">
@@ -53,6 +94,9 @@
       <a href="#achievements">Achievements</a>
     </nav>
     <div class="header-actions">
+      <button class="icon-btn palette-hint" id="palette-open" type="button" aria-label="Open command palette">
+        <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M7 9l2.5 2.5L7 14M12.5 14H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       <button class="icon-btn" id="sound-toggle" type="button" aria-pressed="true" aria-label="Toggle sound">
         <svg class="icon icon-sound-on" viewBox="0 0 24 24"><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M19 6a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
         <svg class="icon icon-sound-off" viewBox="0 0 24 24" hidden><path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -66,23 +110,31 @@
       </button>
     </div>
   </div>
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track" id="ticker-track"></div>
+  </div>
 </header>
 
 <main>
   <section class="hero" id="home">
     <p class="eyebrow">Board-Approved · Fully Compliant · Purpose Unclear</p>
     <h1 class="hero-title">THE EXTREMELY IMPORTANT BUTTON<span class="tm">™</span></h1>
-    <p class="hero-subtitle">Its function is classified. Its importance is not in question. Press with confidence.</p>
+    <p class="hero-subtitle" id="hero-subtitle">Its function is classified. Its importance is not in question. Press with confidence.</p>
 
     <div class="button-stage">
       <div class="button-glow" aria-hidden="true"></div>
-      <button id="the-button" class="the-button" type="button" aria-describedby="button-status">
-        <span class="the-button-inner">
-          <span class="the-button-label">PRESS</span>
-          <span class="the-button-sub">Authorized Personnel Encouraged</span>
-        </span>
-        <span class="ripple-layer" aria-hidden="true"></span>
-      </button>
+      <div class="button-tilt-wrap" id="button-tilt-wrap">
+        <svg class="charge-ring" id="charge-ring" viewBox="0 0 240 240" aria-hidden="true">
+          <circle cx="120" cy="120" r="114" />
+        </svg>
+        <button id="the-button" class="the-button" type="button" aria-describedby="button-status">
+          <span class="the-button-inner">
+            <span class="the-button-label">PRESS</span>
+            <span class="the-button-sub">Authorized Personnel Encouraged</span>
+          </span>
+          <span class="ripple-layer" aria-hidden="true"></span>
+        </button>
+      </div>
       <p id="button-status" class="button-status" role="status" aria-live="polite">Awaiting your extremely important decision.</p>
     </div>
 
@@ -103,6 +155,7 @@
 
     <div class="hero-cta-row">
       <button class="btn btn--ghost" id="share-open" type="button">Share Your Performance</button>
+      <button class="btn btn--ghost" id="palette-open-2" type="button">Open Command Palette <kbd>⌘K</kbd></button>
     </div>
   </section>
 
@@ -116,6 +169,10 @@
         <div class="stat-card glass">
           <span class="stat-label">Achievements Unlocked</span>
           <span class="stat-value" id="stat-achievements">0 / <span id="stat-achievements-total">0</span></span>
+        </div>
+        <div class="stat-card glass">
+          <span class="stat-label">Prestige Score</span>
+          <span class="stat-value" id="stat-prestige">0</span>
         </div>
         <div class="stat-card glass">
           <span class="stat-label">System Breakthroughs</span>
@@ -137,9 +194,10 @@
     </div>
   </section>
 
-  <section class="dashboard-section" id="dashboard">
+  <section class="dashboard-section section-reveal" id="dashboard">
     <div class="section-inner">
       <div class="section-heading">
+        <span class="section-number">01</span>
         <h2>Executive Performance Dashboard</h2>
         <p>Live figures, reviewed by nobody, trusted by all.</p>
       </div>
@@ -158,7 +216,7 @@
             <span class="kpi-label">Stakeholder Happiness</span>
             <span class="kpi-trend kpi-trend--up" id="kpi-happiness-trend">▲ 0.0%</span>
           </div>
-          <span class="kpi-value" id="kpi-happiness">0<span class="kpi-unit">%</span></span>
+          <span class="kpi-value" id="kpi-happiness"><span id="kpi-happiness-num">0</span><span class="kpi-unit">%</span></span>
           <canvas class="kpi-spark" id="spark-happiness" height="36"></canvas>
         </div>
         <div class="kpi-card glass">
@@ -195,13 +253,34 @@
           <canvas id="chart-departments" height="180"></canvas>
         </div>
       </div>
+
+      <div class="chart-grid chart-grid--wide">
+        <div class="chart-card glass live-feed-card">
+          <div class="chart-card-head">
+            <h3><span class="live-dot" aria-hidden="true"></span>Live Global Activity</h3>
+            <span class="chart-sub" id="live-viewers">— stakeholders watching</span>
+          </div>
+          <ul class="live-feed" id="live-feed"></ul>
+        </div>
+        <div class="chart-card glass quote-card">
+          <div class="chart-card-head">
+            <h3>Executive Insight</h3>
+            <span class="chart-sub">Refreshed continuously, understood rarely</span>
+          </div>
+          <blockquote class="exec-quote" id="exec-quote">
+            <p id="exec-quote-text">"We don't know what the button does either. That's what makes it exciting."</p>
+            <cite id="exec-quote-cite">— Linda Ferngrove, Chief Button Officer</cite>
+          </blockquote>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="activity-section" id="activity">
+  <section class="activity-section section-reveal" id="activity">
     <div class="section-inner">
       <div class="section-heading section-heading--row">
         <div>
+          <span class="section-number">02</span>
           <h2>Activity Log</h2>
           <p>An auditable record of extremely important events.</p>
         </div>
@@ -209,31 +288,51 @@
       </div>
       <div class="activity-log-card glass">
         <ul id="activity-log" class="activity-log"></ul>
-        <p class="activity-empty" id="activity-empty">No activity yet. Press the button to generate history.</p>
+        <div class="activity-empty" id="activity-empty">
+          <svg viewBox="0 0 64 64" width="46" height="46" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="4 6"/><path d="M22 34l7 7 14-16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p id="activity-empty-text">No activity yet. Press the button to generate history.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="achievements-section" id="achievements">
+  <section class="achievements-section section-reveal" id="achievements">
     <div class="section-inner">
-      <div class="section-heading">
-        <h2>Achievements</h2>
-        <p>Meaningless recognition for meaningless milestones.</p>
+      <div class="section-heading section-heading--row">
+        <div>
+          <span class="section-number">03</span>
+          <h2>Achievements</h2>
+          <p>Meaningless recognition for meaningless milestones.</p>
+        </div>
+        <div class="rarity-legend">
+          <span class="rarity-pip rarity-pip--common"></span>Common
+          <span class="rarity-pip rarity-pip--rare"></span>Rare
+          <span class="rarity-pip rarity-pip--epic"></span>Epic
+          <span class="rarity-pip rarity-pip--legendary"></span>Legendary
+        </div>
       </div>
       <div class="achievements-grid" id="achievements-grid"></div>
     </div>
   </section>
 </main>
 
+<div class="mobile-bar" id="mobile-bar">
+  <button class="mobile-bar-btn" id="mobile-bar-btn" type="button" aria-label="Press the button">
+    <span id="mobile-bar-count">0</span>
+  </button>
+  <span class="mobile-bar-label">presses — tap to add one</span>
+</div>
+
 <footer class="site-footer">
   <div class="section-inner footer-inner">
-    <p>© 2026 Extremely Important Technologies. All decisions are final.</p>
+    <p id="footer-copyright">© 2026 Extremely Important Technologies. All decisions are final.</p>
     <p class="footer-sub">THE EXTREMELY IMPORTANT BUTTON™ is a registered pursuit of Extremely Important Technologies. No purchase necessary. Importance not guaranteed.</p>
   </div>
 </footer>
 
 <div class="modal-backdrop" id="settings-backdrop" hidden>
   <div class="modal glass" id="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <div class="modal-grabber" aria-hidden="true"></div>
     <div class="modal-head">
       <h2 id="settings-title">Settings</h2>
       <button class="icon-btn" id="settings-close" type="button" aria-label="Close settings">
@@ -309,6 +408,7 @@
 
 <div class="modal-backdrop" id="share-backdrop" hidden>
   <div class="modal modal--share glass" id="share-modal" role="dialog" aria-modal="true" aria-labelledby="share-title">
+    <div class="modal-grabber" aria-hidden="true"></div>
     <div class="modal-head">
       <h2 id="share-title">Share Your Performance</h2>
       <button class="icon-btn" id="share-close" type="button" aria-label="Close share dialog">
@@ -327,10 +427,26 @@
   </div>
 </div>
 
+<div class="modal-backdrop" id="about-backdrop" hidden>
+  <div class="modal glass" id="about-modal" role="dialog" aria-modal="true" aria-labelledby="about-title">
+    <div class="modal-grabber" aria-hidden="true"></div>
+    <div class="modal-head">
+      <h2 id="about-title">About This Button</h2>
+      <button class="icon-btn" id="about-close" type="button" aria-label="Close">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <p class="modal-lede">Mission Statement, Fiscal Year 2026</p>
+    <p class="about-body">Extremely Important Technologies exists to press forward — metaphorically, and now, literally. THE EXTREMELY IMPORTANT BUTTON™ was conceived in a boardroom, refined in a taskforce, and approved by a committee that has since been dissolved. Its function remains classified at the request of stakeholders who could not agree on what the function was.</p>
+    <p class="about-body">What we can confirm: every press is real. Every statistic is generated. Every department mentioned may or may not exist. Your dedication has been noted, filed, and will not be reviewed.</p>
+    <p class="about-signoff">— The Board, probably</p>
+  </div>
+</div>
+
 <div class="achievement-toast" id="achievement-toast" hidden>
   <div class="achievement-toast-icon" id="achievement-toast-icon">🏆</div>
   <div>
-    <p class="achievement-toast-eyebrow">Achievement Unlocked</p>
+    <p class="achievement-toast-eyebrow" id="achievement-toast-eyebrow">Achievement Unlocked</p>
     <p class="achievement-toast-title" id="achievement-toast-title">—</p>
   </div>
 </div>
