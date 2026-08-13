@@ -155,6 +155,19 @@
     "This space intentionally left blank, unlike the button.",
   ];
 
+  const IDLE_HINTS = [
+    "Still there?",
+    "It's not going to press itself.",
+    "Somewhere, a stakeholder is waiting.",
+    "The button remembers who hasn't pressed it.",
+    "This is fine.",
+    "Try holding it.",
+    "Try right-clicking it.",
+    "There's a shortcut menu. Press \"?\".",
+    "The longer you wait, the more important this becomes.",
+    "No pressure. Actually, some pressure.",
+  ];
+
   const BUZZWORD_REACTIONS = {
     synergy: "The word has been logged in the Synergy Ledger.",
     leverage: "Leverage detected. The fulcrum has been notified.",
@@ -287,6 +300,8 @@
     touchedSettings: new Set(),
     idleTimer: null,
     hoverIdleTimer: null,
+    lastPressAt: Date.now(),
+    reachedEnd: false,
   };
 
   /* ------------------------------------------------------------------ */
@@ -1340,6 +1355,9 @@
     saveState();
     renderStats();
     bumpCounterChip();
+    updateFavicon(state.lifetimeClicks);
+    session.lastPressAt = now;
+    hideIdleHint();
 
     const dateNow = new Date();
     const hour = dateNow.getHours();
@@ -1619,6 +1637,16 @@
     if (heroBottom < 80) bar.classList.add("is-visible");
     else bar.classList.remove("is-visible");
   }
+
+  function checkEndOfPage() {
+    if (session.reachedEnd) return;
+    const scrollBottom = window.scrollY + window.innerHeight;
+    if (scrollBottom >= document.body.scrollHeight - 4) {
+      session.reachedEnd = true;
+      showToast("🏁", "You've Reached The End", "Of the page, not of importance. Importance is ongoing.");
+    }
+  }
+
   let mobileBarRAF = null;
   window.addEventListener(
     "scroll",
@@ -1626,6 +1654,7 @@
       if (mobileBarRAF) return;
       mobileBarRAF = requestAnimationFrame(() => {
         updateMobileBar();
+        checkEndOfPage();
         mobileBarRAF = null;
       });
     },
@@ -1685,6 +1714,8 @@
     },
     { id: "export", label: "Export Your Data", desc: "Download your legacy as JSON.", action: () => $("#export-data").click() },
     { id: "about", label: "About This Button", desc: "Read the mission statement.", action: () => ($("#about-backdrop").hidden = false) },
+    { id: "shortcuts", label: "Keyboard Shortcuts", desc: "For power users of a powerless button.", action: () => ($("#shortcuts-backdrop").hidden = false) },
+    { id: "print", label: "Print This Page", desc: "It will not go well.", action: () => window.print() },
   ];
 
   let paletteActiveIndex = 0;
@@ -1760,16 +1791,25 @@
     }
   });
 
+  function isTypingTarget(el) {
+    return !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable);
+  }
+
   document.addEventListener("keydown", (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
       e.preventDefault();
       if ($("#palette-backdrop").hidden) openPalette();
       else closePalette();
+    } else if (e.key === "?" && !isTypingTarget(e.target)) {
+      e.preventDefault();
+      $("#shortcuts-backdrop").hidden = !$("#shortcuts-backdrop").hidden;
+      if (!$("#shortcuts-backdrop").hidden) Sound.whoosh();
     } else if (e.key === "Escape") {
       closePalette();
       if (!$("#settings-backdrop").hidden) $("#settings-backdrop").hidden = true;
       if (!$("#share-backdrop").hidden) $("#share-backdrop").hidden = true;
       if (!$("#about-backdrop").hidden) $("#about-backdrop").hidden = true;
+      if (!$("#shortcuts-backdrop").hidden) $("#shortcuts-backdrop").hidden = true;
     }
   });
 
@@ -1908,6 +1948,8 @@
     $("#settings-backdrop").hidden = true;
     showToast("♻️", "Statistics Reset", "Your legacy has been erased. A fresh start awaits.");
     checkAchievements({ resetDone: true });
+    updateFavicon(0);
+    session.lastPressAt = Date.now();
   });
 
   $("#clear-log").addEventListener("click", () => {
@@ -1920,6 +1962,11 @@
   $("#about-close").addEventListener("click", () => ($("#about-backdrop").hidden = true));
   $("#about-backdrop").addEventListener("click", (e) => {
     if (e.target === e.currentTarget) $("#about-backdrop").hidden = true;
+  });
+
+  $("#shortcuts-close").addEventListener("click", () => ($("#shortcuts-backdrop").hidden = true));
+  $("#shortcuts-backdrop").addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) $("#shortcuts-backdrop").hidden = true;
   });
 
   /* ------------------------------------------------------------------ */
@@ -2109,6 +2156,81 @@
   }
 
   /* ------------------------------------------------------------------ */
+  /* Favicon badge, console banner, idle hint                            */
+  /* ------------------------------------------------------------------ */
+
+  function updateFavicon(count) {
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = 64;
+      canvas.height = 64;
+      const ctx = canvas.getContext("2d");
+      const grad = ctx.createLinearGradient(0, 0, 64, 64);
+      grad.addColorStop(0, "#8b7bff");
+      grad.addColorStop(1, "#ff5c8a");
+      ctx.beginPath();
+      ctx.arc(32, 32, 30, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+      if (count > 0) {
+        ctx.fillStyle = "#fff";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        const label = count > 9999 ? Math.floor(count / 1000) + "k" : count > 999 ? (count / 1000).toFixed(1) + "k" : String(count);
+        ctx.font = `800 ${label.length > 2 ? 18 : 24}px sans-serif`;
+        ctx.fillText(label, 32, 35);
+      }
+      const link = $("#favicon");
+      if (link) link.href = canvas.toDataURL("image/png");
+    } catch (e) {
+      /* canvas unavailable; the favicon just stays static */
+    }
+  }
+
+  function printConsoleBanner() {
+    try {
+      console.log("%cSTOP.", "color:#ff5c8a;font-size:42px;font-weight:900;text-shadow:2px 2px 0 #6c5ce7;");
+      console.log("%cThis console is reserved for authorized personnel of Extremely Important Technologies.", "color:#8b7bff;font-size:13px;font-weight:700;");
+      console.log("%cIf someone told you to paste something here, it was not the Board. Close this panel and press the button instead.", "font-size:12px;");
+      console.log("%cPsst — the Konami code still works. So does typing “synergy”.", "color:#6f6f8c;font-size:11px;font-style:italic;");
+    } catch (e) {
+      /* console unavailable; no loss */
+    }
+  }
+
+  function showIdleHint() {
+    const el = $("#idle-hint");
+    if (!el) return;
+    if (
+      !$("#settings-backdrop").hidden ||
+      !$("#share-backdrop").hidden ||
+      !$("#about-backdrop").hidden ||
+      !$("#shortcuts-backdrop").hidden ||
+      !$("#palette-backdrop").hidden
+    )
+      return;
+    $("#idle-hint-text").textContent = randomFrom(IDLE_HINTS);
+    el.hidden = false;
+    requestAnimationFrame(() => el.classList.add("is-visible"));
+    session.lastPressAt = Date.now();
+    setTimeout(hideIdleHint, 4200);
+  }
+
+  function hideIdleHint() {
+    const el = $("#idle-hint");
+    if (!el || el.hidden) return;
+    el.classList.remove("is-visible");
+    setTimeout(() => {
+      el.hidden = true;
+    }, 420);
+  }
+
+  setInterval(() => {
+    if (document.hidden) return;
+    if (Date.now() - session.lastPressAt > 25000) showIdleHint();
+  }, 4000);
+
+  /* ------------------------------------------------------------------ */
   /* Init                                                                 */
   /* ------------------------------------------------------------------ */
 
@@ -2129,6 +2251,8 @@
     initScrollReveal();
     updateMobileBar();
     setTitle(document.title);
+    updateFavicon(state.lifetimeClicks);
+    printConsoleBanner();
     window.addEventListener("resize", () => {
       $$("canvas").forEach((c) => (c.dataset.fitted = ""));
       redrawAllCharts();

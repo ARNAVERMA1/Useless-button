@@ -1,4 +1,10 @@
 <!doctype html>
+<!--
+  You have opened the source of THE EXTREMELY IMPORTANT BUTTON™.
+  This is, itself, an extremely important action. It has not been logged,
+  mostly because we don't know how. Proceed with the quiet pride of
+  someone who reads things they were never meant to read.
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -6,12 +12,25 @@
 <title>THE EXTREMELY IMPORTANT BUTTON™ — Extremely Important Technologies</title>
 <meta name="description" content="The single most important button ever engineered. Press it. Nothing will be explained." />
 <meta name="theme-color" content="#0b0d17" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%236c5ce7'/%3E%3Ccircle cx='50' cy='50' r='28' fill='%23ff5c8a'/%3E%3C/svg%3E" />
+<link rel="icon" id="favicon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%236c5ce7'/%3E%3Ccircle cx='50' cy='50' r='28' fill='%23ff5c8a'/%3E%3C/svg%3E" />
 <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body data-theme="dark">
 
 <div id="grain-overlay" aria-hidden="true"></div>
+
+<div id="print-message">
+  THIS PAGE CANNOT BE PRINTED. IT IS TOO IMPORTANT FOR PAPER.
+  <span>Please experience its importance on a screen, as intended by the Board.</span>
+</div>
+
+<!--
+  If you can see this, you have scrolled through raw HTML looking for secrets.
+  Correct instinct. Try the Konami code. Try typing "synergy". Try holding
+  the button. Try right-clicking it. Try dragging it. We're not going to
+  list all of them — that would defeat the purpose, and the Bureau of
+  Meaningless Metrics has a whole department for purpose-defeating.
+-->
 
 <div id="boot-overlay" class="boot-overlay" role="status" aria-label="Loading">
   <div class="boot-inner">
@@ -123,6 +142,7 @@
 
     <div class="button-stage">
       <div class="button-glow" aria-hidden="true"></div>
+      <div class="idle-hint" id="idle-hint" hidden><span id="idle-hint-text"></span></div>
       <div class="button-tilt-wrap" id="button-tilt-wrap">
         <svg class="charge-ring" id="charge-ring" viewBox="0 0 240 240" aria-hidden="true">
           <circle cx="120" cy="120" r="114" />
@@ -440,6 +460,27 @@
     <p class="about-body">Extremely Important Technologies exists to press forward — metaphorically, and now, literally. THE EXTREMELY IMPORTANT BUTTON™ was conceived in a boardroom, refined in a taskforce, and approved by a committee that has since been dissolved. Its function remains classified at the request of stakeholders who could not agree on what the function was.</p>
     <p class="about-body">What we can confirm: every press is real. Every statistic is generated. Every department mentioned may or may not exist. Your dedication has been noted, filed, and will not be reviewed.</p>
     <p class="about-signoff">— The Board, probably</p>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="shortcuts-backdrop" hidden>
+  <div class="modal glass" id="shortcuts-modal" role="dialog" aria-modal="true" aria-labelledby="shortcuts-title">
+    <div class="modal-grabber" aria-hidden="true"></div>
+    <div class="modal-head">
+      <h2 id="shortcuts-title">Keyboard Shortcuts</h2>
+      <button class="icon-btn" id="shortcuts-close" type="button" aria-label="Close">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <p class="modal-lede">For power users of an entirely powerless button.</p>
+    <ul class="shortcut-list">
+      <li><span>Press the button</span><span class="shortcut-keys"><kbd>Space</kbd> or <kbd>Enter</kbd></span></li>
+      <li><span>Open command palette</span><span class="shortcut-keys"><kbd>⌘</kbd><kbd>K</kbd></span></li>
+      <li><span>This menu</span><span class="shortcut-keys"><kbd>?</kbd></span></li>
+      <li><span>Close any overlay</span><span class="shortcut-keys"><kbd>Esc</kbd></span></li>
+      <li><span>A hidden protocol</span><span class="shortcut-keys"><kbd>↑↑↓↓←→←→BA</kbd></span></li>
+      <li><span>Corporate buzzwords</span><span class="shortcut-keys">just type them</span></li>
+    </ul>
   </div>
 </div>
 
